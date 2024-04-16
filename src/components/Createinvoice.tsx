@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { MdDelete } from "react-icons/md";
+import { InputField, InputItems } from "../interfaces/invoice";
 
 interface CreateInvoiceProps {
   show: boolean,
@@ -10,13 +11,6 @@ interface CreateInvoiceProps {
 interface InvoiceData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: number; clientName: string; clientEmail: string; senderAddress: { street: string; city: string; postCode: string; country: string; }; clientAddress: { street: string; city: string; postCode: string; country: string; }; items: {name:string, quantity: number, price: number, total: number}[]; total: number; }
 
 interface ErrorData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: string; clientName: string; clientEmail: string; senderAddressstreet: string; senderAddresscity: string; senderAddresspostcode: string; senderAddresscountry: string; clientAddressstreet: string; clientAddresscity: string; clientAddresspostcode: string; clientAddresscountry: string; items:string }
-
-interface InputItems {
-  name: string,
-  quantity: number,
-  price: number,
-  total: number,
-}
 
 const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
   const show = props.show;
@@ -37,27 +31,21 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
     },
   ]);
 
-  interface InputFiels {
-    target : {
-      name: string,
-      value: string
-    }
-  }
   // eslint-disable-next-line 
-  const handleChange = (e:InputFiels) => {
+  const handleChange = (e:InputField) => {
     const { name, value } = e.target;
     const newData = { ...invoiceData, [name]: value }
     setInvoiceData(newData);
   }
 
-  const handleSenderChange = (e:InputFiels) => {
+  const handleSenderChange = (e:InputField) => {
     const { name, value } = e.target;
     const senderAddress = invoiceData.senderAddress
     let newdata = { ...senderAddress, [name]: value }
     setInvoiceData({...invoiceData, senderAddress: newdata});
   }
 
-  const handleClientAddressChange = (e:InputFiels) => {
+  const handleClientAddressChange = (e:InputField) => {
     const { name, value } = e.target;
     const clientAddress = invoiceData.clientAddress
     let newdata = { ...clientAddress, [name]: value }

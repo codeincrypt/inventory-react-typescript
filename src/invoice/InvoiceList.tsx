@@ -6,7 +6,6 @@ import NoInvoicelist from '../components/NoInvoice';
 import Createinvoice from '../components/Createinvoice';
 
 const Invoicelist: React.FC = () => {
-  // eslint-disable-next-line
   const [datalist, setDatalist] = React.useState<any[]>(invoiceData);
   // eslint-disable-next-line
   const [datalist2, setDatalist2] = React.useState<any[]>(invoiceData);

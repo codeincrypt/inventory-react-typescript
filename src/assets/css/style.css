@@ -80,6 +80,9 @@
   background-color: #1f213a !important;
   font-size: 15px !important;
 }
+.dark-mode input:disabled {
+  background-color: #191c2f !important;
+}
 .dark-mode select, textarea {
   background-color: #1f213a !important;
   font-size: 15px !important;

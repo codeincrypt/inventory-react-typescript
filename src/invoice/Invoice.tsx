@@ -8,7 +8,7 @@ import FormatDate from "../components/FormatDate"
 import CustomModal from '../components/Modal';
 import EditInvoice from '../components/EditInvoice';
 
-interface InvoiceData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: number; clientName: string; clientEmail: string; status: string; senderAddress: { street: string; city: string; postCode: string; country: string; }; clientAddress: { street: string; city: string; postCode: string; country: string; }; items: {name:string, quantity: number, price: number, total: number}[]; total: number; }
+interface InvoiceData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: number; clientName: string; clientEmail: string; status: string; senderAddress: { street: string; city: string; postCode: string; country: string; }; clientAddress: { street: string; city: string; postCode: string; country: string; }; items: { name: string, quantity: number, price: number, total: number }[]; total: number; }
 
 const Invoice: React.FC = () => {
   const { id } = useParams<string>();
@@ -31,7 +31,7 @@ const Invoice: React.FC = () => {
   }, [])
 
   const markAsPaid = () => {
-    setInvoicedata((invoicedata:any) => ({...invoicedata, status: "paid"}));
+    setInvoicedata((invoicedata: any) => ({ ...invoicedata, status: "paid" }));
     // CODE BELOW TO API CALL - TO UPDATE STATUS AS : MARK AS PAID
   }
 
@@ -45,9 +45,9 @@ const Invoice: React.FC = () => {
 
   return (
     <div className="container">
-      {invoicedata? (
+      {invoicedata ? (
         <EditInvoice show={editStatus} closeRightSidebar={closeEditInvoice} viewdata={invoicedata} />
-      ):null}
+      ) : null}
       <div className='row justify-content-center'>
         <div className="col-lg-9 col-12 inventory">
           <div className='mb-4 col-lg-12 '>
@@ -115,11 +115,11 @@ const Invoice: React.FC = () => {
                   <p className='mb-1'>Bill to</p>
                   <h5>{invoicedata?.clientName}</h5>
                   <p>
-                  {invoicedata?.clientAddress?.street} <br />
-                  {invoicedata?.clientAddress?.city} <br />
-                  {invoicedata?.clientAddress?.postCode} <br />
-                  {invoicedata?.clientAddress?.country} <br />
-                </p>
+                    {invoicedata?.clientAddress?.street} <br />
+                    {invoicedata?.clientAddress?.city} <br />
+                    {invoicedata?.clientAddress?.postCode} <br />
+                    {invoicedata?.clientAddress?.country} <br />
+                  </p>
                 </div>
               </div>
 
@@ -132,35 +132,35 @@ const Invoice: React.FC = () => {
 
               <div className='col-lg-12 col-12 card2'>
                 <div className='p-4'>
-                <table className='table table-lg mb-0'>
-                  <tr className='table-heads'>
-                    <td width="46%">Item Name</td>
-                    <td className='text-center' width="18%">QTY.</td>
-                    <td className='text-right' width="18%">Price</td>
-                    <td className='text-right' width="18%">Total</td>
-                  </tr>
+                  <table className='table table-lg mb-0'>
+                    <tr className='table-heads'>
+                      <td width="46%">Item Name</td>
+                      <td className='text-center' width="18%">QTY.</td>
+                      <td className='text-right' width="18%">Price</td>
+                      <td className='text-right' width="18%">Total</td>
+                    </tr>
 
-                {invoicedata?.items?.map((item, index) => (
-                  <tr className='table-rows'>
-                    <td className='text-left'>{item?.name}</td>
-                    <td className='text-center'>{item?.quantity}</td>
-                    <td className='text-right'>£ {item?.price.toFixed(2)}</td>
-                    <td className='text-right'>{item?.total.toFixed(2)}</td>
-                  </tr>
-                ))}
+                    {invoicedata?.items?.map((item, index) => (
+                      <tr className='table-rows'>
+                        <td className='text-left'>{item?.name}</td>
+                        <td className='text-center'>{item?.quantity}</td>
+                        <td className='text-right'>£ {item?.price.toFixed(2)}</td>
+                        <td className='text-right'>{item?.total.toFixed(2)}</td>
+                      </tr>
+                    ))}
 
-                </table>
+                  </table>
                 </div>
                 <div className='col-lg-12 p-4 footer'>
-                <table className='table table-lg mb-0'>
-                  <tr className='table-heads'>
-                    <td width="50%">
-                      <h6 className="mb-0">Amount Due</h6>
-                    </td>
-                    <td className='text-right' width="50%">
-                      <h2 className="mb-0">£ {invoicedata?.total.toFixed(2)}</h2>
-                    </td>
-                  </tr>
+                  <table className='table table-lg mb-0'>
+                    <tr className='table-heads'>
+                      <td width="50%">
+                        <h6 className="mb-0">Amount Due</h6>
+                      </td>
+                      <td className='text-right' width="50%">
+                        <h2 className="mb-0">£ {invoicedata?.total.toFixed(2)}</h2>
+                      </td>
+                    </tr>
                   </table>
                 </div>
               </div>
