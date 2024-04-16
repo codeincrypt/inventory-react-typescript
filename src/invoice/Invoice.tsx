@@ -3,7 +3,7 @@ import { Link, useParams } from 'react-router-dom';
 import { RiArrowLeftSLine } from "react-icons/ri";
 import { FaCircle } from "react-icons/fa";
 
-import invoiceData from "../assets/data.json"
+import invoiceList from "../assets/data.json"
 import FormatDate from "../components/FormatDate"
 import CustomModal from '../components/Modal';
 import EditInvoice from '../components/EditInvoice';
@@ -20,15 +20,19 @@ const Invoice: React.FC = () => {
   const handleCloseModal = () => setShowModal(false);
   const handleCloseDeletedModal = () => setShowDeletedModal(false);
 
+  const fetchData = () => {
+    const responseData = invoiceList.find((item: InvoiceData) => item.id === id);
+    setInvoicedata(responseData);
+  }
+
   useEffect(() => {
-    const responseData = invoiceData.find((item: InvoiceData) => item.id === id);
-      setInvoicedata(responseData);
-  }, [id])
+    fetchData()
+    // eslint-disable-next-line 
+  }, [])
 
   const markAsPaid = () => {
-    let updatedStatus = {...invoicedata, status: 'paid'}
-    console.log('updatedStatus', updatedStatus)
-    // setInvoicedata(updatedStatus)
+    setInvoicedata((invoicedata:any) => ({...invoicedata, status: "paid"}));
+    // CODE BELOW TO API CALL - TO UPDATE STATUS AS : MARK AS PAID
   }
 
   const openEditInvoice = () => setEditStatus(true)

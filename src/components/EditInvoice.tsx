@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { MdDelete } from "react-icons/md";
+import { InputField, InputItems } from "../interfaces/invoice";
 
 interface EditInvoiceProps {
   show: boolean,
@@ -36,19 +37,13 @@ interface EditInvoiceProps {
   }
 }
 
-interface InputItems {
-  name: string,
-  quantity: number,
-  price: number,
-  total: number,
-}
-
 const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
   const show = props.show;
   const viewdata = props.viewdata;
 
   const closeSidebar = () => props.closeRightSidebar(false);
 
+  const [invoiceData, setInvoiceData] = useState(viewdata)
   const [inputList, setInputList] = useState(viewdata.items)
 
   const handleRemoveClick = (index: number) => {
@@ -69,11 +64,39 @@ const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
     ]);
   };
 
-  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>, index: number) => {
+  const handleChange = (e:InputField) => {
+    const { name, value } = e.target;
+    const newData = { ...invoiceData, [name]: value }
+    setInvoiceData(newData);
+  }
+
+  const handleSenderChange = (e:InputField) => {
+    const { name, value } = e.target;
+    const senderAddress = invoiceData.senderAddress
+    let newdata = { ...senderAddress, [name]: value }
+    setInvoiceData({...invoiceData, senderAddress: newdata});
+  }
+
+  const handleClientAddressChange = (e:InputField) => {
+    const { name, value } = e.target;
+    const clientAddress = invoiceData.clientAddress
+    let newdata = { ...clientAddress, [name]: value }
+    setInvoiceData({...invoiceData, clientAddress: newdata});
+  }
+
+  const handleInputChange = (e: any, index: number) => {
     const { name, value } = e.target;
     const list: InputItems[] = [...inputList];
+    if(name === "quantity"){
+      list[index].total = Number(value) * Number(list[index].price);
+    }
+    if(name === "price"){
+      list[index].total = Number(list[index].quantity) * Number(value);
+    }
     list[index] = { ...list[index], [name]: value };
     setInputList(list)
+    const totalcalc = list.reduce((n, { total }) => n+total, 0);
+    setInvoiceData({...invoiceData, items: list, total: totalcalc});
   }
 
   return (
@@ -99,19 +122,22 @@ const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
               </div>
               <Form.Group className="mb-3 col-12" controlId="streetaddress">
                 <Form.Label>Street Address</Form.Label>
-                <Form.Control type="text" placeholder="Street Address" defaultValue={viewdata.senderAddress.street} name="streetaddress" />
+                <Form.Control type="text" placeholder="Street Address" defaultValue={viewdata.senderAddress.street} name="streetaddress" 
+                onChange={(e) => handleSenderChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="city">
                 <Form.Label>City</Form.Label>
-                <Form.Control type="text" placeholder="City" defaultValue={viewdata.senderAddress.city} name="city" />
+                <Form.Control type="text" placeholder="City" defaultValue={viewdata.senderAddress.city} name="city" 
+                onChange={(e) => handleSenderChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="postcode">
                 <Form.Label>Post Code</Form.Label>
-                <Form.Control type="text" placeholder="Post Code" defaultValue={viewdata.senderAddress.postCode} name="postcode" />
+                <Form.Control type="text" placeholder="Post Code" defaultValue={viewdata.senderAddress.postCode} name="postcode" 
+                onChange={(e) => handleSenderChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="country">
                 <Form.Label>Country</Form.Label>
-                <Form.Control type="text" placeholder="Country" defaultValue={viewdata.senderAddress.country} name="country" />
+                <Form.Control type="text" placeholder="Country" defaultValue={viewdata.senderAddress.country} name="country" onChange={(e) => handleSenderChange(e)} />
               </Form.Group>
             </div>
           </div>
@@ -122,27 +148,32 @@ const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
               </div>
               <Form.Group className="mb-3 col-12" controlId="clientname">
                 <Form.Label>Client's Name</Form.Label>
-                <Form.Control type="text" placeholder="Client's Name" defaultValue={viewdata.clientName} name="clientname" />
+                <Form.Control type="text" placeholder="Client's Name" defaultValue={viewdata.clientName} name="clientname" 
+                onChange={(e) => handleChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-12" controlId="clientemail">
                 <Form.Label>Client's Email</Form.Label>
-                <Form.Control type="text" placeholder="Client's Email"defaultValue={viewdata.clientEmail} name="clientemail" />
+                <Form.Control type="text" placeholder="Client's Email"defaultValue={viewdata.clientEmail} name="clientemail" 
+                onChange={(e) => handleChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-12" controlId="streetaddress" >
                 <Form.Label>Street Address</Form.Label>
-                <Form.Control type="text" placeholder="Street Address" name="streetaddress" defaultValue={viewdata.clientAddress.street} />
+                <Form.Control type="text" placeholder="Street Address" name="streetaddress" defaultValue={viewdata.clientAddress.street} onChange={(e) => handleClientAddressChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="city">
                 <Form.Label>City</Form.Label>
-                <Form.Control type="text" placeholder="City" name="city" defaultValue={viewdata.clientAddress.street} />
+                <Form.Control type="text" placeholder="City" name="city" defaultValue={viewdata.clientAddress.street} 
+                onChange={(e) => handleClientAddressChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="postcode">
                 <Form.Label>Post Code</Form.Label>
-                <Form.Control type="text" placeholder="Post Code" name="postcode" defaultValue={viewdata.clientAddress.postCode} />
+                <Form.Control type="text" placeholder="Post Code" name="postcode" defaultValue={viewdata.clientAddress.postCode} 
+                onChange={(e) => handleClientAddressChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="country">
                 <Form.Label>Country</Form.Label>
-                <Form.Control type="text" placeholder="Country" name="country" defaultValue={viewdata.clientAddress.country} />
+                <Form.Control type="text" placeholder="Country" name="country" defaultValue={viewdata.clientAddress.country} 
+                onChange={(e) => handleClientAddressChange(e)} />
               </Form.Group>
             </div>
           </div>
@@ -151,11 +182,13 @@ const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
             <div className="row">
               <Form.Group className="mb-3 col-6" controlId="issuedate">
                 <Form.Label>Issue Date</Form.Label>
-                <Form.Control type="text" placeholder="Issue Date" name="issuedate" defaultValue={viewdata.createdAt} />
+                <Form.Control type="text" placeholder="Issue Date" name="issuedate" defaultValue={viewdata.createdAt} 
+                onChange={(e) => handleChange(e)} />
               </Form.Group>
               <Form.Group className="mb-3 col-6" controlId="projectterms">
                 <Form.Label>Payment Terms</Form.Label>
-                <Form.Select aria-label="Payment Terms" className="form-control"  defaultValue={viewdata.paymentTerms}>
+                <Form.Select aria-label="Payment Terms" className="form-control"  defaultValue={viewdata.paymentTerms} 
+                onChange={(e) => handleChange(e)} >
                   <option value="Net 30 Days">Net 30 Days</option>
                   <option value="Net 15 Days">Net 15 Days</option>
                   <option value="Net 7 Days">Net 7 Days</option>
@@ -163,7 +196,8 @@ const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
               </Form.Group>
               <Form.Group className="mb-3 col-12" controlId="projectdesc">
                 <Form.Label>Project Description</Form.Label>
-                <Form.Control type="text" placeholder="Project Description" name="projectdesc" defaultValue={viewdata.description} />
+                <Form.Control type="text" placeholder="Project Description" name="projectdesc" defaultValue={viewdata.description} 
+                onChange={(e) => handleChange(e)} />
               </Form.Group>
             </div>
           </div>

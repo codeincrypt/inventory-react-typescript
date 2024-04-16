@@ -9,7 +9,7 @@ interface CreateInvoiceProps {
 
 interface InvoiceData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: number; clientName: string; clientEmail: string; senderAddress: { street: string; city: string; postCode: string; country: string; }; clientAddress: { street: string; city: string; postCode: string; country: string; }; items: {name:string, quantity: number, price: number, total: number}[]; total: number; }
 
-interface ErrorData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: string; clientName: string; clientEmail: string; senderAddressstreet: string; senderAddresscity: string; senderAddresspostcode: string; senderAddresscountry: string; clientAddressstreet: string; clientAddresscity: string; clientAddresspostcode: string; clientAddresscountry: string; }
+interface ErrorData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: string; clientName: string; clientEmail: string; senderAddressstreet: string; senderAddresscity: string; senderAddresspostcode: string; senderAddresscountry: string; clientAddressstreet: string; clientAddresscity: string; clientAddresspostcode: string; clientAddresscountry: string; items:string }
 
 interface InputItems {
   name: string,
@@ -113,6 +113,7 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
     if (!invoiceData.senderAddress.country) newErrors.senderAddresscountry = 'Country is required';
     if (!invoiceData.clientName) newErrors.clientName = 'Client name is required';
     if (!invoiceData.clientEmail) newErrors.clientEmail = 'Client email-id is required';
+    if (!invoiceData.clientEmail.match(/\S+@\S+\.\S+/)) newErrors.clientEmail = 'Please enter valid mail Id';
     if (!invoiceData.clientAddress.street) newErrors.clientAddressstreet = 'Street is required';
     if (!invoiceData.clientAddress.city) newErrors.clientAddresscity = 'City is required';
     if (!invoiceData.clientAddress.postCode) newErrors.clientAddresspostcode = 'Post Code is required';
@@ -122,21 +123,24 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
     if (!invoiceData.paymentDue) newErrors.paymentDue = 'Payment Due is required';
     if (Object.keys(newErrors).length > 0) {
       setErrors(newErrors);
+      return false
     } else {
       setErrors({});
       console.log('Form submitted:');
+      return true
     }
   }
 
   const handleSubmitSave = async (e:any) => {
-    validateForm(e)
-    submitForm()
+    const validate = validateForm(e)
+    if(validate){
+      submitForm()
+    }
   }
 
   const handleSubmitDraft = () => submitForm()
   const discardForm = () => {
-    setInvoiceData({id:"", createdAt:"", paymentDue:"", description:"", paymentTerms:0, clientName:"", clientEmail:"", senderAddress: { street:"", city:"", postCode:"", country:""}, clientAddress: { street:"", city:"", postCode:"", country:"" }, items: [{name:"", quantity:0, price:0, total:0}], total:0})
-    console.log("discardForm", invoiceData)
+    setInvoiceData((invoiceData:any) => ({...invoiceData, description:"", createdAt:""}));
   }
   
   const submitForm = () => {
@@ -145,7 +149,8 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
     let paymentTerms = invoiceData.paymentTerms
     let paymentDue = new Date(Date.now() + Number(paymentTerms) * 24 * 60 * 60 * 1000).toLocaleDateString()
     let newData = {...invoiceData, paymentDue:paymentDue.toString(), id: id, createdAt: date, status: 'pending'}
-    setInvoiceData(newData)
+    console.log("newData :: ", newData)
+    setInvoiceData((invoicedata:any) => (newData));
   }
 
   return (
@@ -153,7 +158,6 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
       <div className={`left-sidebar left-sidebar-animate ${show === false ? "d-none" : ""}`}>
         <div className="left-margin">
           <form onSubmit={(e) => handleSubmitSave(e)}>
-          {/* <p> {JSON.stringify(invoiceData)} </p>  */}
           <div className="col-lg-12">
             <div className="row">
               <div className="col-8">
@@ -183,7 +187,7 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="postCode">
                 <Form.Label>Post Code</Form.Label>
-                <Form.Control type="text" placeholder="Post Code" name="postCode" 
+                <Form.Control type="number" placeholder="Post Code" name="postCode" 
                 onChange={(e) => handleSenderChange(e)} />
                 {errors.senderAddresspostcode && <div className="error">{errors.senderAddresspostcode}</div>}
               </Form.Group>
@@ -216,17 +220,17 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
                 <Form.Label>Street Address</Form.Label>
                 <Form.Control type="text" placeholder="Street Address" name="street" defaultValue={invoiceData.clientAddress.street}
                 onChange={(e) => handleClientAddressChange(e)} />
-                {errors.clientAddresscountry && <div className="error">{errors.clientAddresscountry}</div>}
+                {errors.clientAddressstreet && <div className="error">{errors.clientAddressstreet}</div>}
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="city">
                 <Form.Label>City</Form.Label>
                 <Form.Control type="text" placeholder="City" name="city" defaultValue={invoiceData.clientAddress.city} onChange={(e) => handleClientAddressChange(e)} />
-                {errors.clientAddresscountry && <div className="error">{errors.clientAddresscountry}</div>}
+                {errors.clientAddresscity && <div className="error">{errors.clientAddresscity}</div>}
               </Form.Group>
-              <Form.Group className="mb-3 col-4" controlId="postcode">
+              <Form.Group className="mb-3 col-4" controlId="postCode">
                 <Form.Label>Post Code</Form.Label>
-                <Form.Control type="text" placeholder="Post Code" name="postcode" defaultValue={invoiceData.clientAddress.postCode} onChange={(e) => handleClientAddressChange(e)} />
-                {errors.clientAddresscountry && <div className="error">{errors.clientAddresscountry}</div>}
+                <Form.Control type="number" placeholder="Post Code" name="postCode" defaultValue={invoiceData.clientAddress.postCode} onChange={(e) => handleClientAddressChange(e)} />
+                {errors.clientAddresspostcode && <div className="error">{errors.clientAddresspostcode}</div>}
               </Form.Group>
               <Form.Group className="mb-3 col-4" controlId="country">
                 <Form.Label>Country</Form.Label>
@@ -324,6 +328,8 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
                   );
                 })}
               </div>
+              
+              {errors.items && <div className="error">{errors.items}</div>}
 
               <button className="btn btn-dark btn-block mr-2" onClick={handleAddClick}>
                 + Add New item
