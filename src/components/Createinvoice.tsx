@@ -1,16 +1,12 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { MdDelete } from "react-icons/md";
-import { InputField, InputItems } from "../interfaces/invoice";
+import { ErrorMessageInvoiceData, InputField, InputItems, InvoiceData } from "../interfaces/invoice";
 
 interface CreateInvoiceProps {
   show: boolean,
   closeRightSidebar: any,
 }
-
-interface InvoiceData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: number; clientName: string; clientEmail: string; senderAddress: { street: string; city: string; postCode: string; country: string; }; clientAddress: { street: string; city: string; postCode: string; country: string; }; items: {name:string, quantity: number, price: number, total: number}[]; total: number; }
-
-interface ErrorData { id: string; createdAt: string; paymentDue: string; description: string; paymentTerms: string; clientName: string; clientEmail: string; senderAddressstreet: string; senderAddresscity: string; senderAddresspostcode: string; senderAddresscountry: string; clientAddressstreet: string; clientAddresscity: string; clientAddresspostcode: string; clientAddresscountry: string; items:string }
 
 const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
   const show = props.show;
@@ -20,7 +16,7 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
 
   const [invoiceData, setInvoiceData] = useState<InvoiceData>({id:"", createdAt:"", paymentDue:"", description:"", paymentTerms:0, clientName:"", clientEmail:"", senderAddress: { street:"", city:"", postCode:"", country:""}, clientAddress: { street:"", city:"", postCode:"", country:"" }, items: [{name:"", quantity:0, price:0, total:0}], total:0})
 
-  const [errors, setErrors] = useState<Partial<ErrorData>>({});
+  const [errors, setErrors] = useState<Partial<ErrorMessageInvoiceData>>({});
   
   const [inputList, setInputList] = useState([
     {
@@ -94,7 +90,7 @@ const Createinvoice: React.FC<CreateInvoiceProps> = (props) => {
 
   const validateForm = (e:any) => {
     e.preventDefault();
-    const newErrors: Partial<ErrorData> = {};
+    const newErrors: Partial<ErrorMessageInvoiceData> = {};
     if (!invoiceData.senderAddress.street) newErrors.senderAddressstreet = 'Street is required';
     if (!invoiceData.senderAddress.city) newErrors.senderAddresscity = 'City is required';
     if (!invoiceData.senderAddress.postCode) newErrors.senderAddresspostcode = 'Post Code is required';

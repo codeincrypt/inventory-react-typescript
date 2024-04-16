@@ -1,40 +1,12 @@
 import React, { useState } from "react";
 import Form from "react-bootstrap/Form";
 import { MdDelete } from "react-icons/md";
-import { InputField, InputItems } from "../interfaces/invoice";
+import { InputField, InputItems, InvoiceData } from "../interfaces/invoice";
 
 interface EditInvoiceProps {
   show: boolean,
   closeRightSidebar: any,
-  viewdata: { 
-    id: string; 
-    createdAt: string; 
-    paymentDue: string; 
-    description: string; 
-    paymentTerms: number; 
-    clientName: string; 
-    clientEmail: string; 
-    status: string; 
-    senderAddress: { 
-      street: string; 
-      city: string; 
-      postCode: string; 
-      country: string; 
-    }; 
-    clientAddress: { 
-      street: string; 
-      city: string; 
-      postCode: string; 
-      country: string; 
-    }; 
-    items: {
-      name:string, 
-      quantity: number, 
-      price: number, 
-      total: number
-    }[]; 
-    total: number; 
-  }
+  viewdata: InvoiceData
 }
 
 const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
@@ -276,10 +248,8 @@ const EditInvoice: React.FC<EditInvoiceProps> = (props) => {
               </div>
             </div>
 
-            <div className="col-lg-12 my-4">
-              <span className="text-left">
-              </span>
-              <span className="float-right">
+            <div className="col-lg-12 mt-4 ">
+              <span className="float-right pb-4">
                 <button className="btn btn-dark mr-2" type="button" onClick={closeSidebar}>
                   Cancel
                 </button>
